@@ -6,7 +6,7 @@ RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requ
 
 RUN rm -f /etc/apt/sources.list.d/yarn.list && \
     apt-get update && \
-    apt-get install -y openjdk-11-jdk ca-certificates-java && \
+    apt-get install -y openjdk-17-jre-headless ca-certificates-java && \
     apt-get clean && \
     update-ca-certificates -f
 
@@ -17,8 +17,8 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/aws
 
 # Autodetect architecture and set JAVA_HOME accordingly
 RUN ARCH=$(dpkg --print-architecture) && \
-    echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-${ARCH}/" >> /etc/profile && \
-    echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-${ARCH}/" >> /etc/bash.bashrc
+    echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-${ARCH}/" >> /etc/profile && \
+    echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-${ARCH}/" >> /etc/bash.bashrc
 
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64/
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64/
 EXPOSE 4040

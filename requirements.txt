@@ -3,3 +3,5 @@ numpy>=2.2.1
 pandas>=2.2.3
 pyarrow>=19.0.0
 ipykernel>=6.29.5
+findspark>=2.0.1
+
