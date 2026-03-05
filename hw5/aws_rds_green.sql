@@ -1,4 +1,4 @@
-CREATE DATABASE 
+-- assuming you've created a `taxi_db` already - via CREATE DATABASE or when creating AWS MySQL instance 
 USE `taxi_db`;
 
 CREATE TABLE `g_taxi_users` (
