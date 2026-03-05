@@ -1,0 +1,45 @@
+-- green_taxi_with_zones.sqlx - name of the file become the name of the created table
+-- Config blocks allow you to configure, document, and test your data assets.
+config {
+    type: "table",
+    columns: {
+        taxi_ride_id: "trip ID based on the Fivetran _file and _line",
+        taxi_type: "type of taxi - yellow or green",
+        pickup_time: "pickup time",
+        dropoff_time: "dropoff time",
+        do_location_id: "dropoff location ID",
+        do_borough: "dropoff borough name - can be empty if ID did not have any borough mapping",
+        pu_location_id: "pickup location ID",
+        pu_borough: "pickup borough name - can be empty if ID did not have any borough mapping",
+        fare_amount: "fare amount",
+        trip_distance: "trip distance",
+        trip_duration_minutes: " trip duration in minutes",
+        passenger_count: "passenger count",
+        ratecode_id: "ratecode_id",
+        total_amount: "total amount paid for the ride",
+        tip_amount: "tip amount"
+    }
+}
+
+-- The rest of a SQLX file contains your SELECT statement used to create the table.
+SELECT
+  CONCAT("g-2025-01/", _line) AS taxi_ride_id,
+  "green" AS taxi_type,
+  DATETIME(lpep_pickup_datetime) AS pickup_time,
+  DATETIME(lpep_dropoff_datetime) AS dropoff_time,
+  dolocation_id AS do_location_id,
+  ARRAY( SELECT zones.borough
+    FROM `taxi_data_static.taxi_zones` AS zones
+    WHERE zones.LocationID = dolocation_id) AS do_borough,
+  pulocation_id AS pu_location_id,
+  ARRAY( SELECT zones.borough
+    FROM `taxi_data_static.taxi_zones` AS zones
+    WHERE zones.LocationID = pulocation_id) AS pu_borough,
+  trip_distance,
+  DATETIME_DIFF(lpep_dropoff_datetime, lpep_pickup_datetime, MINUTE) AS trip_duration_minutes,
+  passenger_count,
+  fare_amount,
+  ratecode_id,
+  total_amount,
+  tip_amount
+FROM `taxi_data_raw.green_2025_01`
