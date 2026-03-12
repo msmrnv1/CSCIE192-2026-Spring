@@ -23,31 +23,31 @@ config {
 
 -- The rest of a SQLX file contains your SELECT statement used to create the table.
 SELECT
-  CONCAT("y-2025-01/", _line) AS taxi_ride_id,
+  CONCAT("y-2025-01/", ROW_NUMBER() OVER (ORDER BY tpep_pickup_datetime, tpep_dropoff_datetime)) AS taxi_ride_id,
   "yellow" AS taxi_type,
   DATETIME(tpep_pickup_datetime) AS pickup_time,
   DATETIME(tpep_dropoff_datetime) AS dropoff_time,
-  dolocation_id AS do_location_id,
+  DOLocationID AS do_location_id,
   ARRAY(
   SELECT
     zones.borough
   FROM
-    `taxi_data_static.taxi_zones` AS zones
+    `taxi_data_raw.taxi_zones` AS zones
   WHERE
-    zones.LocationID = dolocation_id) AS do_borough,
-  pulocation_id AS pu_location_id,
+    zones.LocationID = DOLocationID) AS do_borough,
+  PULocationID AS pu_location_id,
   ARRAY(
   SELECT
     zones.borough
   FROM
-    `taxi_data_static.taxi_zones` AS zones
+    `taxi_data_raw.taxi_zones` AS zones
   WHERE
-    zones.LocationID = pulocation_id) AS pu_borough,
+    zones.LocationID = PULocationID) AS pu_borough,
   trip_distance,
   DATETIME_DIFF(tpep_dropoff_datetime, tpep_pickup_datetime, MINUTE) AS trip_duration_minutes,
   passenger_count,
   fare_amount,
-  ratecode_id as ratecode_id,
+  RatecodeID as ratecode_id,
   total_amount,
   tip_amount
 FROM
